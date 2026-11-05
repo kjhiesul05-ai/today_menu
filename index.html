@@ -7,13 +7,17 @@
   <style>
     :root {
       color-scheme: light;
-      --cream: #faf6eb;
-      --paper: #fffdf7;
-      --ink: #20362a;
-      --muted: #526357;
-      --green: #246043;
-      --pale-green: #e6efdf;
-      --line: #dedfd0;
+      --cream: #fff9f0;
+      --paper: #fffdf8;
+      --ink: #40352d;
+      --muted: #705b4d;
+      --orange: #f28c45;
+      --coral: #f4b5a7;
+      --lime: #dce8c6;
+      --green: #3c4f2f;
+      --peach: #ffead9;
+      --line: #ebd9c8;
+      --shadow: 0 8px 24px #5e341810;
     }
 
     * { box-sizing: border-box; }
@@ -27,40 +31,82 @@
       overflow-wrap: anywhere;
     }
     button, select { font: inherit; }
-    button, select:not(:disabled) { cursor: pointer; }
-    :focus-visible { outline: 3px solid #94602c; outline-offset: 3px; }
+    button:not(:disabled), select:not(:disabled) { cursor: pointer; }
+    :focus-visible { outline: 3px solid #9c4921; outline-offset: 3px; }
     [hidden] { display: none !important; }
-    .wrap { width: min(100% - 2rem, 68rem); margin-inline: auto; }
+    .wrap { width: min(100% - 2rem, 73rem); margin-inline: auto; }
 
-    .hero {
-      padding: clamp(2.5rem, 7vw, 5rem) 0;
-      background: radial-gradient(ellipse at 90% 5%, #e1ebbc, transparent 65%), #eaf1df;
-      border-bottom: 1px solid var(--line);
+    .masthead {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding-block: 1.2rem;
+      font-weight: 750;
     }
+    .masthead svg {
+      width: 2.25rem;
+      height: 2.25rem;
+      padding: .4rem;
+      border-radius: .7rem;
+      background: var(--peach);
+      color: #91431f;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      align-items: center;
+      gap: clamp(1rem, 4vw, 3.5rem);
+      padding: clamp(1rem, 3vw, 2rem);
+      border: 1px solid var(--line);
+      border-radius: 1.75rem;
+      background: radial-gradient(ellipse at 100% 0, var(--coral), transparent 75%), #ffefe1;
+      box-shadow: var(--shadow);
+    }
+    .hero-copy { padding: clamp(.5rem, 3vw, 2rem); }
     .eyebrow {
       display: flex;
       align-items: center;
       gap: .5rem;
       margin: 0;
-      color: var(--green);
-      font-size: .82rem;
+      color: #863d1e;
+      font-size: .78rem;
       font-weight: 750;
-      letter-spacing: .12em;
+      letter-spacing: .14em;
     }
-    .eyebrow svg { width: 1.25rem; height: 1.25rem; }
+    .eyebrow::before { width: 1.4rem; height: 2px; background: currentColor; content: ""; }
     h1 {
-      margin: .6rem 0 .4rem;
-      font-size: clamp(2rem, 5.4vw, 3.75rem);
-      letter-spacing: -.06em;
-      line-height: 1.2;
+      margin: .55rem 0 .65rem;
+      font-size: clamp(2.2rem, 5.35vw, 4.25rem);
+      letter-spacing: -.075em;
+      line-height: 1.12;
     }
     .subtitle { margin: 0; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.2rem); }
-    main { padding-block: clamp(1.25rem, 4vw, 2.5rem) 3rem; }
-    .picker {
-      padding: clamp(1rem, 4vw, 2rem);
-      border: 1px solid var(--line);
-      border-radius: 1.25rem;
+    .hero figure { position: relative; margin: 0; }
+    .hero .photo { overflow: hidden; aspect-ratio: 16 / 10; border-radius: 1.15rem; }
+    .hero figcaption {
+      position: absolute;
+      right: .75rem;
+      bottom: .75rem;
+      padding: .3rem .7rem;
+      border-radius: 2rem;
       background: var(--paper);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+    main { padding-bottom: 3rem; }
+    .random-recommendations, .picker {
+      margin-top: clamp(1rem, 3vw, 1.65rem);
+      padding: clamp(1rem, 4vw, 2rem);
+      border-radius: 1.4rem;
+    }
+    .random-recommendations {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .picker {
+      border: 1px solid #c7d7ad;
+      background: var(--lime);
     }
     .picker-head {
       display: flex;
@@ -69,14 +115,14 @@
       flex-wrap: wrap;
       gap: .8rem 1rem;
     }
-    h2 { margin: 0; font-size: clamp(1.25rem, 3.5vw, 1.6rem); letter-spacing: -.04em; }
+    h2 { margin: 0; font-size: clamp(1.35rem, 3.5vw, 1.75rem); letter-spacing: -.045em; }
     .month { display: flex; align-items: center; gap: .6rem; font-weight: 650; }
     select {
       min-height: 2.75rem;
       padding: .4rem .65rem;
-      border: 1px solid #a5b29d;
-      border-radius: .55rem;
-      background: #f3f7ef;
+      border: 1px solid #9baa86;
+      border-radius: .75rem;
+      background: #f7faef;
       color: var(--ink);
     }
     .hint, .result-status { margin: .4rem 0 0; color: var(--muted); }
@@ -91,69 +137,207 @@
       color: var(--green);
       font-weight: 650;
     }
-    .ingredient:hover { background: var(--pale-green); }
-    .ingredient[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: white; }
+    .ingredient:hover { background: #fffdf8; }
+    .ingredient[aria-pressed="true"] { background: var(--orange); border-color: #a65126; color: #302017; }
     .recommendations { margin-top: 2rem; }
+    .extra-recommendations { padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .draw-button, .detail-actions button {
+      min-height: 2.75rem;
+      padding: .65rem 1.1rem;
+      border: 1px solid #c0612e;
+      border-radius: .8rem;
+      background: var(--orange);
+      color: #302017;
+      font-weight: 750;
+    }
+    .draw-button { transition: transform .18s ease, background .18s ease; }
+    .draw-button:hover:not(:disabled), .detail-actions button:hover { background: #ffa262; }
+    .draw-button:active:not(:disabled) { transform: scale(.96); }
+    .draw-button:disabled { opacity: .65; }
+    .draw-button.drawing { animation: draw-pop .32s ease; }
+    @keyframes draw-pop {
+      40% { transform: translateY(-4px) rotate(-2deg); }
+      75% { transform: rotate(1deg); }
+    }
     .result-status {
       padding: 1rem;
-      border: 1px dashed #b9c9b4;
+      border: 1px solid var(--line);
       border-radius: .8rem;
-      background: #f6f7ed;
+      background: var(--paper);
     }
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: clamp(.7rem, 2vw, 1.25rem);
       margin-top: 1rem;
     }
+    .cards:empty { display: none; }
     .card {
+      position: relative;
       overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 1rem;
+      border-radius: 1.15rem;
       background: var(--paper);
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    @media (hover: hover) {
+      .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px #5e341825; }
     }
     .photo {
       position: relative;
       display: grid;
       place-items: center;
       aspect-ratio: 4 / 3;
-      background: var(--pale-green);
+      background: var(--peach);
     }
     .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .photo img:not(.loaded) { opacity: 0; }
-    .placeholder { display: grid; justify-items: center; gap: .35rem; color: var(--green); font-size: .9rem; }
+    .placeholder { display: grid; justify-items: center; gap: .35rem; color: var(--muted); font-size: .85rem; text-align: center; }
     .placeholder svg { width: 2.5rem; height: 2.5rem; }
-    .card-body { padding: 1rem; }
-    .card h3 { margin: 0 0 .45rem; font-size: 1.1rem; }
+    .card-body { padding: clamp(.7rem, 2vw, 1.05rem); }
+    .card h3 { margin: 0 0 .45rem; font-size: clamp(.97rem, 2vw, 1.12rem); }
+    .card-open {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-weight: inherit;
+      text-align: left;
+    }
+    .card-open::after { position: absolute; inset: 0; content: ""; }
+    .card-open:focus-visible { outline: none; }
+    .card-open:focus-visible::after { outline: 3px solid #9c4921; outline-offset: -4px; border-radius: 1.15rem; }
+    .card-open:hover { text-decoration: underline; }
     .category {
       display: inline-block;
       padding: .15rem .6rem;
       border-radius: 1rem;
-      background: var(--pale-green);
-      color: var(--green);
+      background: var(--peach);
+      color: #803b1f;
       font-size: .85rem;
       font-weight: 650;
+    }
+    body:has(.recipe-dialog[open]) { overflow: hidden; }
+    .recipe-dialog {
+      width: min(calc(100% - 1.5rem), 42rem);
+      max-height: calc(100% - 1.5rem);
+      max-height: calc(100dvh - 1.5rem);
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1.4rem;
+      background: var(--cream);
+      color: var(--ink);
+      box-shadow: 0 1rem 3rem #2d1b1640;
+    }
+    .recipe-dialog::backdrop { background: #2d1b16a6; }
+    .detail-scroll { max-height: inherit; overflow: auto; overscroll-behavior: contain; }
+    .detail-close {
+      position: absolute;
+      z-index: 1;
+      top: .75rem;
+      right: 1rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    #detail-photo .photo { aspect-ratio: auto; height: clamp(12rem, 50vw, 22rem); }
+    #detail-photo img { object-fit: contain; }
+    .detail-body { padding: clamp(1rem, 4vw, 2rem); }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+    .detail-section { margin-top: 1.35rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+    .detail-section h3, .detail-tip h3 { margin: 0 0 .55rem; font-size: 1.1rem; }
+    .detail-section p, .detail-tip p { margin: 0; white-space: pre-line; }
+    .detail-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+    .detail-steps li {
+      display: grid;
+      grid-template-columns: 1.75rem 1fr;
+      gap: .6rem;
+      margin-top: .7rem;
+      counter-increment: step;
+    }
+    .detail-steps li::before {
+      display: grid;
+      place-items: center;
+      height: 1.75rem;
+      border-radius: 50%;
+      background: var(--peach);
+      color: #803b1f;
+      font-size: .85rem;
+      font-weight: 750;
+      content: counter(step);
+    }
+    .detail-tip { margin-top: 1.35rem; padding: 1rem; border-radius: .75rem; background: #fff2cc; }
+    .detail-actions { margin-top: 1.35rem; text-align: right; }
+    @media (max-width: 64rem) {
+      .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 43rem) {
+      .hero { grid-template-columns: 1fr; gap: .75rem; }
+      .hero .photo { aspect-ratio: 16 / 9; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .draw-button { width: 100%; }
+    }
+    @media (max-width: 22rem) {
+      .cards { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card, .draw-button { transition: none; }
+      .draw-button.drawing { animation: none; }
+      .card:hover, .draw-button:active:not(:disabled) { transform: none; }
     }
   </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap">
-      <p class="eyebrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 19c1-4 5-7 10-10M6 16C2 8 10 5 20 4c0 9-5 15-14 12Z"/>
-        </svg>
-        제철 식탁
-      </p>
-      <h1>오늘은 어떤 메뉴를 선택할까?</h1>
-      <p class="subtitle">제철 재료로 찾는 맛있는 오늘의 한 끼</p>
-    </div>
+  <header class="wrap masthead">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 13h18a9 9 0 0 1-18 0ZM9 22h6M9 9c-2-2 2-3 0-6M15 9c-2-2 2-3 0-6"/>
+    </svg>
+    오늘의 식탁
   </header>
 
   <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">한 끼의 즐거움</p>
+        <h1 id="hero-title">오늘은 뭘 먹지?</h1>
+        <p class="subtitle">오늘의 한 끼, 맛있고 즐겁게 골라보세요!</p>
+      </div>
+      <figure>
+        <div id="hero-photo" class="photo">
+          <div class="placeholder">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M7 25h34a17 17 0 0 1-34 0ZM18 42h12M17 19c-4-4 4-5 0-9M25 19c-4-4 4-5 0-9M33 19c-4-4 4-5 0-9"/>
+            </svg>
+            <span>사진을 준비 중이에요</span>
+          </div>
+          <img alt="" fetchpriority="high" decoding="async" aria-hidden="true">
+        </div>
+        <figcaption id="hero-caption" hidden></figcaption>
+      </figure>
+    </section>
+
+    <section class="random-recommendations" aria-labelledby="random-title">
+      <div class="picker-head">
+        <div>
+          <h2 id="random-title">🎲 오늘의 메뉴 뽑기</h2>
+          <p class="hint">뭘 먹을지 고민된다면? 오늘의 메뉴를 랜덤으로 골라보세요!</p>
+        </div>
+        <button id="draw-menu" class="draw-button" type="button" disabled>오늘의 메뉴 뽑기</button>
+      </div>
+      <p id="random-status" class="hint" role="status" hidden></p>
+      <div id="random-cards" class="cards"></div>
+    </section>
+
     <section class="picker" aria-labelledby="ingredients-title">
       <div class="picker-head">
-        <h2 id="ingredients-title">제철 식재료</h2>
+        <h2 id="ingredients-title">🌿 이달의 제철 식재료</h2>
         <div class="month">
           <label for="month">월 선택</label>
           <select id="month" disabled></select>
@@ -164,11 +348,49 @@
     </section>
 
     <section id="recommendations" class="recommendations" aria-labelledby="recipe-title" hidden>
-      <h2 id="recipe-title">추천 메뉴</h2>
+      <h2 id="recipe-title">제철 추천 메뉴</h2>
       <p id="result-status" class="result-status" role="status"></p>
       <div id="cards" class="cards"></div>
     </section>
+
+    <section id="extra-recommendations" class="recommendations extra-recommendations" aria-labelledby="extra-title" hidden>
+      <h2 id="extra-title">🍽️ 이런 메뉴는 어떠세요?</h2>
+      <p class="hint">전체 레시피에서 고른 추가 추천 메뉴예요.</p>
+      <div id="extra-cards" class="cards"></div>
+    </section>
   </main>
+
+  <dialog id="recipe-dialog" class="recipe-dialog" aria-labelledby="detail-name">
+    <form method="dialog">
+      <button class="detail-close" type="submit" aria-label="레시피 상세 닫기" autofocus>×</button>
+    </form>
+    <div class="detail-scroll">
+      <div id="detail-photo"></div>
+      <div class="detail-body">
+        <h2 id="detail-name"></h2>
+        <div class="detail-tags">
+          <span id="detail-category" class="category"></span>
+          <span id="detail-method" class="category"></span>
+        </div>
+        <section class="detail-section">
+          <h3>재료 및 분량</h3>
+          <p id="detail-ingredients"></p>
+        </section>
+        <section class="detail-section">
+          <h3>조리순서</h3>
+          <ol id="detail-steps" class="detail-steps" role="list"></ol>
+          <p id="detail-no-steps" hidden>등록된 조리순서가 없어요.</p>
+        </section>
+        <section id="detail-tip" class="detail-tip" hidden>
+          <h3><span aria-hidden="true">💡</span> 요리 팁</h3>
+          <p></p>
+        </section>
+        <form class="detail-actions" method="dialog">
+          <button type="submit">닫기</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
 
   <template id="recipe-card">
     <article class="card">
@@ -182,7 +404,7 @@
         <img alt="" loading="lazy" decoding="async" aria-hidden="true">
       </div>
       <div class="card-body">
-        <h3></h3>
+        <h3><button type="button" class="card-open" aria-haspopup="dialog"></button></h3>
         <span class="category"></span>
       </div>
     </article>
@@ -195,9 +417,26 @@
     const recommendations = document.querySelector('#recommendations');
     const resultStatus = document.querySelector('#result-status');
     const cards = document.querySelector('#cards');
+    const extraRecommendations = document.querySelector('#extra-recommendations');
+    const extraCards = document.querySelector('#extra-cards');
+    const randomCards = document.querySelector('#random-cards');
+    const randomStatus = document.querySelector('#random-status');
+    const drawButton = document.querySelector('#draw-menu');
     const cardTemplate = document.querySelector('#recipe-card');
+    const recipeDialog = document.querySelector('#recipe-dialog');
+    const detailScroll = recipeDialog.querySelector('.detail-scroll');
+    const detailPhoto = recipeDialog.querySelector('#detail-photo');
+    const detailName = recipeDialog.querySelector('#detail-name');
+    const detailCategory = recipeDialog.querySelector('#detail-category');
+    const detailMethod = recipeDialog.querySelector('#detail-method');
+    const detailIngredients = recipeDialog.querySelector('#detail-ingredients');
+    const detailSteps = recipeDialog.querySelector('#detail-steps');
+    const detailNoSteps = recipeDialog.querySelector('#detail-no-steps');
+    const detailTip = recipeDialog.querySelector('#detail-tip');
 
     let menu;
+    let drawCandidates = [];
+    let previousRandomNames = new Set();
 
     for (let month = 1; month <= 12; month++) {
       monthSelect.add(new Option(`${month}월`, month));
@@ -211,6 +450,8 @@
 
       ingredients.replaceChildren();
       cards.replaceChildren();
+      extraCards.replaceChildren();
+      extraRecommendations.hidden = true;
       ingredientStatus.textContent = monthlyIngredients.length
         ? `${month}월의 제철 식재료 ${monthlyIngredients.length}가지`
         : `${month}월에 등록된 제철 식재료가 없어요.`;
@@ -234,13 +475,9 @@
       }
     }
 
-    function makeCard(recipe) {
-      const card = cardTemplate.content.cloneNode(true);
-      const photo = card.querySelector('img');
-      const placeholder = card.querySelector('.placeholder');
-      card.querySelector('h3').textContent = recipe.name;
-      card.querySelector('.category').textContent = recipe.category;
-
+    function loadPhoto(frame, recipe) {
+      const photo = frame.querySelector('img');
+      const placeholder = frame.querySelector('.placeholder');
       if (recipe.image) {
         // 사진을 받은 뒤에만 표시해 깨진 이미지 아이콘을 피합니다.
         photo.alt = `${recipe.name} 사진`;
@@ -256,12 +493,50 @@
         });
         photo.src = recipe.image;
       }
+    }
+
+    function showRecipeDetails(recipe) {
+      detailName.textContent = recipe.name || '메뉴 상세';
+      detailCategory.textContent = recipe.category || '';
+      detailCategory.hidden = !recipe.category;
+      detailMethod.textContent = recipe.method || '';
+      detailMethod.hidden = !recipe.method;
+      detailIngredients.textContent = recipe.ingredients_text?.trim() || '등록된 재료 정보가 없어요.';
+
+      const steps = (recipe.steps || []).filter(step => step?.trim());
+      detailSteps.replaceChildren();
+      for (const step of steps) {
+        const item = document.createElement('li');
+        item.textContent = step;
+        detailSteps.append(item);
+      }
+      detailSteps.hidden = !steps.length;
+      detailNoSteps.hidden = steps.length > 0;
+      const tip = recipe.tip?.trim() || '';
+      detailTip.querySelector('p').textContent = tip;
+      detailTip.hidden = !tip;
+
+      const frame = cardTemplate.content.querySelector('.photo').cloneNode(true);
+      frame.querySelector('img').loading = 'eager';
+      loadPhoto(frame, recipe);
+      detailPhoto.replaceChildren(frame);
+      recipeDialog.showModal();
+      detailScroll.scrollTop = 0;
+    }
+
+    function makeCard(recipe) {
+      const card = cardTemplate.content.cloneNode(true);
+      const button = card.querySelector('.card-open');
+      button.textContent = recipe.name;
+      button.addEventListener('click', () => showRecipeDetails(recipe));
+      card.querySelector('.category').textContent = recipe.category;
+      loadPhoto(card.querySelector('.photo'), recipe);
       return card;
     }
 
     function showRecipes(ingredient, month) {
       const matches = menu.recipes.filter(recipe =>
-        recipe.seasonal.includes(ingredient) && recipe.months.includes(month)
+        recipe?.seasonal?.includes(ingredient) && recipe.months?.includes(month)
       );
 
       cards.replaceChildren();
@@ -272,6 +547,43 @@
       for (const recipe of matches) {
         cards.append(makeCard(recipe));
       }
+
+      const matchedNames = new Set(matches.map(recipe => recipe.name));
+      const extras = matches.length <= 15
+        ? pickRecipes(drawCandidates.filter(recipe => !matchedNames.has(recipe.name)))
+        : [];
+      extraCards.replaceChildren(...extras.map(makeCard));
+      extraRecommendations.hidden = extras.length === 0;
+    }
+
+    function pickRecipes(...pools) {
+      const selected = [];
+      for (const pool of pools) {
+        while (pool.length && selected.length < 5) {
+          const index = Math.floor(Math.random() * pool.length);
+          const [recipe] = pool.splice(index, 1);
+          selected.push(recipe);
+        }
+      }
+      return selected;
+    }
+
+    function showRandomRecipes() {
+      // 직전에 나오지 않은 메뉴부터 중복 없이 뽑습니다.
+      const fresh = drawCandidates.filter(recipe => !previousRandomNames.has(recipe.name));
+      const previous = drawCandidates.filter(recipe => previousRandomNames.has(recipe.name));
+      const selected = pickRecipes(fresh, previous);
+      randomCards.replaceChildren(...selected.map(makeCard));
+      previousRandomNames = new Set(selected.map(recipe => recipe.name));
+      drawButton.textContent = '🔄 다른 메뉴 추천';
+      drawButton.classList.remove('drawing');
+      // 연속해서 눌러도 버튼 애니메이션을 처음부터 재생합니다.
+      void drawButton.offsetWidth;
+      drawButton.classList.add('drawing');
+      randomStatus.hidden = false;
+      randomStatus.textContent = selected.length
+        ? `뽑은 메뉴 ${selected.length}개 · 카드를 누르면 레시피를 볼 수 있어요.`
+        : '추천할 수 있는 메뉴가 아직 없어요.';
     }
 
     async function loadMenu() {
@@ -282,16 +594,45 @@
         if (!Array.isArray(menu.seasonal) || !Array.isArray(menu.recipes)) {
           throw new Error('menu.json의 데이터 형식이 올바르지 않습니다.');
         }
+        const recipesByName = new Map();
+        for (const recipe of menu.recipes) {
+          if (recipe?.name && !recipesByName.has(recipe.name)) {
+            recipesByName.set(recipe.name, recipe);
+          }
+        }
+        drawCandidates = [...recipesByName.values()];
+        const featuredRecipe = menu.recipes.find(recipe => recipe?.id === 329);
+        if (featuredRecipe?.image) {
+          const heroPhoto = document.querySelector('#hero-photo');
+          const caption = document.querySelector('#hero-caption');
+          heroPhoto.querySelector('img').addEventListener('load', () => {
+            caption.textContent = featuredRecipe.name;
+            caption.hidden = false;
+          });
+          loadPhoto(heroPhoto, featuredRecipe);
+        }
         showIngredients();
+        drawButton.disabled = false;
         monthSelect.disabled = false;
         recommendations.hidden = false;
       } catch (error) {
+        randomStatus.hidden = false;
+        randomStatus.textContent = '메뉴를 불러오지 못했어요. 잠시 후 페이지를 새로고침해 주세요.';
         ingredientStatus.textContent = '메뉴 데이터를 불러오지 못했어요. 로컬 서버에서 페이지를 열고 같은 폴더에 menu.json이 있는지 확인해 주세요.';
         console.error(error);
       }
     }
 
     monthSelect.addEventListener('change', showIngredients);
+    drawButton.addEventListener('click', showRandomRecipes);
+    let backdropPressed = false;
+    recipeDialog.addEventListener('pointerdown', event => {
+      backdropPressed = event.target === recipeDialog;
+    });
+    recipeDialog.addEventListener('click', event => {
+      if (backdropPressed && event.target === recipeDialog) recipeDialog.close();
+      backdropPressed = false;
+    });
     loadMenu();
   </script>
 </body>
