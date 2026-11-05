@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오늘은 어떤 메뉴를 선택할까?</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --cream: #faf6eb;
+      --paper: #fffdf7;
+      --ink: #20362a;
+      --muted: #526357;
+      --green: #246043;
+      --pale-green: #e6efdf;
+      --line: #dedfd0;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: system-ui, "Malgun Gothic", sans-serif;
+      line-height: 1.55;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    button, select { font: inherit; }
+    button, select:not(:disabled) { cursor: pointer; }
+    :focus-visible { outline: 3px solid #94602c; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .wrap { width: min(100% - 2rem, 68rem); margin-inline: auto; }
+
+    .hero {
+      padding: clamp(2.5rem, 7vw, 5rem) 0;
+      background: radial-gradient(ellipse at 90% 5%, #e1ebbc, transparent 65%), #eaf1df;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin: 0;
+      color: var(--green);
+      font-size: .82rem;
+      font-weight: 750;
+      letter-spacing: .12em;
+    }
+    .eyebrow svg { width: 1.25rem; height: 1.25rem; }
+    h1 {
+      margin: .6rem 0 .4rem;
+      font-size: clamp(2rem, 5.4vw, 3.75rem);
+      letter-spacing: -.06em;
+      line-height: 1.2;
+    }
+    .subtitle { margin: 0; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.2rem); }
+    main { padding-block: clamp(1.25rem, 4vw, 2.5rem) 3rem; }
+    .picker {
+      padding: clamp(1rem, 4vw, 2rem);
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      background: var(--paper);
+    }
+    .picker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .8rem 1rem;
+    }
+    h2 { margin: 0; font-size: clamp(1.25rem, 3.5vw, 1.6rem); letter-spacing: -.04em; }
+    .month { display: flex; align-items: center; gap: .6rem; font-weight: 650; }
+    select {
+      min-height: 2.75rem;
+      padding: .4rem .65rem;
+      border: 1px solid #a5b29d;
+      border-radius: .55rem;
+      background: #f3f7ef;
+      color: var(--ink);
+    }
+    .hint, .result-status { margin: .4rem 0 0; color: var(--muted); }
+    .ingredients { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .ingredients:not(:empty) { margin-top: 1rem; }
+    .ingredient {
+      min-height: 2.75rem;
+      padding: .4rem .95rem;
+      border: 1px solid #b9c9b4;
+      border-radius: 2rem;
+      background: #f3f7ef;
+      color: var(--green);
+      font-weight: 650;
+    }
+    .ingredient:hover { background: var(--pale-green); }
+    .ingredient[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: white; }
+    .recommendations { margin-top: 2rem; }
+    .result-status {
+      padding: 1rem;
+      border: 1px dashed #b9c9b4;
+      border-radius: .8rem;
+      background: #f6f7ed;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--paper);
+    }
+    .photo {
+      position: relative;
+      display: grid;
+      place-items: center;
+      aspect-ratio: 4 / 3;
+      background: var(--pale-green);
+    }
+    .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .photo img:not(.loaded) { opacity: 0; }
+    .placeholder { display: grid; justify-items: center; gap: .35rem; color: var(--green); font-size: .9rem; }
+    .placeholder svg { width: 2.5rem; height: 2.5rem; }
+    .card-body { padding: 1rem; }
+    .card h3 { margin: 0 0 .45rem; font-size: 1.1rem; }
+    .category {
+      display: inline-block;
+      padding: .15rem .6rem;
+      border-radius: 1rem;
+      background: var(--pale-green);
+      color: var(--green);
+      font-size: .85rem;
+      font-weight: 650;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 19c1-4 5-7 10-10M6 16C2 8 10 5 20 4c0 9-5 15-14 12Z"/>
+        </svg>
+        제철 식탁
+      </p>
+      <h1>오늘은 어떤 메뉴를 선택할까?</h1>
+      <p class="subtitle">제철 재료로 찾는 맛있는 오늘의 한 끼</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="picker" aria-labelledby="ingredients-title">
+      <div class="picker-head">
+        <h2 id="ingredients-title">제철 식재료</h2>
+        <div class="month">
+          <label for="month">월 선택</label>
+          <select id="month" disabled></select>
+        </div>
+      </div>
+      <p id="ingredient-status" class="hint" role="status">제철 식재료를 불러오는 중이에요.</p>
+      <div id="ingredients" class="ingredients" role="group" aria-labelledby="ingredients-title"></div>
+    </section>
+
+    <section id="recommendations" class="recommendations" aria-labelledby="recipe-title" hidden>
+      <h2 id="recipe-title">추천 메뉴</h2>
+      <p id="result-status" class="result-status" role="status"></p>
+      <div id="cards" class="cards"></div>
+    </section>
+  </main>
+
+  <template id="recipe-card">
+    <article class="card">
+      <div class="photo">
+        <div class="placeholder">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M7 25h34a17 17 0 0 1-34 0ZM18 42h12M17 19c-4-4 4-5 0-9M25 19c-4-4 4-5 0-9M33 19c-4-4 4-5 0-9"/>
+          </svg>
+          <span>사진을 준비 중이에요</span>
+        </div>
+        <img alt="" loading="lazy" decoding="async" aria-hidden="true">
+      </div>
+      <div class="card-body">
+        <h3></h3>
+        <span class="category"></span>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const monthSelect = document.querySelector('#month');
+    const ingredients = document.querySelector('#ingredients');
+    const ingredientStatus = document.querySelector('#ingredient-status');
+    const recommendations = document.querySelector('#recommendations');
+    const resultStatus = document.querySelector('#result-status');
+    const cards = document.querySelector('#cards');
+    const cardTemplate = document.querySelector('#recipe-card');
+
+    let menu;
+
+    for (let month = 1; month <= 12; month++) {
+      monthSelect.add(new Option(`${month}월`, month));
+    }
+    monthSelect.value = new Date().getMonth() + 1;
+
+    function showIngredients() {
+      // select의 값은 문자열이고, JSON의 월은 숫자입니다.
+      const month = Number(monthSelect.value);
+      const monthlyIngredients = menu.seasonal.filter(item => item.month === month);
+
+      ingredients.replaceChildren();
+      cards.replaceChildren();
+      ingredientStatus.textContent = monthlyIngredients.length
+        ? `${month}월의 제철 식재료 ${monthlyIngredients.length}가지`
+        : `${month}월에 등록된 제철 식재료가 없어요.`;
+      resultStatus.textContent = monthlyIngredients.length
+        ? '위에서 제철 식재료를 선택하면 추천 메뉴가 나타나요.'
+        : '다른 달을 선택해 제철 식재료를 찾아보세요.';
+
+      for (const item of monthlyIngredients) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'ingredient';
+        button.textContent = item.name;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => {
+          const previous = ingredients.querySelector('[aria-pressed="true"]');
+          if (previous) previous.setAttribute('aria-pressed', 'false');
+          button.setAttribute('aria-pressed', 'true');
+          showRecipes(item.name, month);
+        });
+        ingredients.append(button);
+      }
+    }
+
+    function makeCard(recipe) {
+      const card = cardTemplate.content.cloneNode(true);
+      const photo = card.querySelector('img');
+      const placeholder = card.querySelector('.placeholder');
+      card.querySelector('h3').textContent = recipe.name;
+      card.querySelector('.category').textContent = recipe.category;
+
+      if (recipe.image) {
+        // 사진을 받은 뒤에만 표시해 깨진 이미지 아이콘을 피합니다.
+        photo.alt = `${recipe.name} 사진`;
+        photo.addEventListener('load', () => {
+          photo.classList.add('loaded');
+          photo.removeAttribute('aria-hidden');
+          placeholder.hidden = true;
+        });
+        photo.addEventListener('error', () => {
+          photo.classList.remove('loaded');
+          photo.setAttribute('aria-hidden', 'true');
+          placeholder.hidden = false;
+        });
+        photo.src = recipe.image;
+      }
+      return card;
+    }
+
+    function showRecipes(ingredient, month) {
+      const matches = menu.recipes.filter(recipe =>
+        recipe.seasonal.includes(ingredient) && recipe.months.includes(month)
+      );
+
+      cards.replaceChildren();
+      resultStatus.textContent = matches.length
+        ? `${ingredient} · 추천 메뉴 ${matches.length}개`
+        : '선택한 재료로 추천할 수 있는 메뉴가 아직 없어요. 다른 제철 재료를 선택해 보세요!';
+
+      for (const recipe of matches) {
+        cards.append(makeCard(recipe));
+      }
+    }
+
+    async function loadMenu() {
+      try {
+        const response = await fetch('./menu.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        menu = await response.json();
+        if (!Array.isArray(menu.seasonal) || !Array.isArray(menu.recipes)) {
+          throw new Error('menu.json의 데이터 형식이 올바르지 않습니다.');
+        }
+        showIngredients();
+        monthSelect.disabled = false;
+        recommendations.hidden = false;
+      } catch (error) {
+        ingredientStatus.textContent = '메뉴 데이터를 불러오지 못했어요. 로컬 서버에서 페이지를 열고 같은 폴더에 menu.json이 있는지 확인해 주세요.';
+        console.error(error);
+      }
+    }
+
+    monthSelect.addEventListener('change', showIngredients);
+    loadMenu();
+  </script>
+</body>
+</html>
